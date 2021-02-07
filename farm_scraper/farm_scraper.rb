@@ -9,8 +9,8 @@ finally = []
 
 agent = Mechanize.new
 agent.user_agent_alias = "Linux Mozilla"
-mech = agent.get "https://farm.ewg.org/top_recips.php?fips=19000&progcode=totalfarm&regionname=Iowa"
-doc = Nokogiri::HTML(URI.open("https://farm.ewg.org/top_recips.php?fips=19000&progcode=totalfarm&regionname=Iowa", 'User-Agent' => '#{@browser}'))
+mech = agent.get "https://farm.ewg.org/top_recips.php?fips=00000&progcode=totalfarm&page=0"
+doc = Nokogiri::HTML(URI.open("https://farm.ewg.org/top_recips.php?fips=00000&progcode=totalfarm&page=0", 'User-Agent' => '#{@browser}'))
 page = 0
 done = false
 while !done
