@@ -22,7 +22,7 @@ puts "Clicking on USA"
 
 #created an array of links to schools on this page
 
-schools = []
+
 states = ["GA"]
 ##states = ["GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN",
 ##    "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA",
@@ -30,15 +30,15 @@ states = ["GA"]
 #States I missed --  AL, AK, AZ, AR, CA, CO, CT, DE, FL
 
 states.each do |state|
-
+    schools = []
     usa_form = usa_page.form
     page_number = 1
-    levels = "HS"
+    levels = "JC%2CSC"
     this_state = state
     usa_form.p = page_number.to_s
     usa_form.levels = levels
     usa_form.states = this_state
-    puts "Filtering HS's only"
+    puts "Filtering Junior and Senior Colleges only"
     sleep(3)
     usa_page = agent.submit(usa_form)
 
@@ -117,7 +117,7 @@ states.each do |state|
             end
         end
 
-    CSV.open("coaches_in_#{this_state}_2.csv", "wb") do |csv|
+    CSV.open("college_coaches_in_#{this_state}.csv", "wb") do |csv|
         puts "Writing to CSV"
         
 
