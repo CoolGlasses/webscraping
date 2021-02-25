@@ -16,50 +16,32 @@ write_counter = 0
 
 #goes to page for usa
 
-sleep(3)
+sleep(1)
 usa_page = agent.page.links.find { |l| l.text == "USA" }.click
 puts "Clicking on USA"
 
 #created an array of links to schools on this page
 
-states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN",
-   "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA",
-   "WV", "WI", "WY"]
 
-states.each do |state|
+
+pages = 42
+page_number = 1
+finally = []
+
+pages.each do 
     schools = []
-    usa_form = usa_page.form
-    page_number = 1
-    levels = "JC\\%2CSC"
-    this_state = state
-    usa_form.p = page_number.to_s
-    usa_form.levels = levels
-    usa_form.states = this_state
-    puts "Filtering Junior and Senior Colleges only"
-    sleep(3)
-    usa_page = agent.submit(usa_form)
-
 
     finished_gathering_school_links = false
-
-    sleep(3)
     while !finished_gathering_school_links
+        this_page = agent.get "https://www.coachesdirectory.com/search?sort=name&p=#{page_number}&q=&states=&levels=JC%2CSC&types=&positions=&location=&radius=5&enrollment_min=0&enrollment_max=0"
+        puts "On page #{page_number}"
 
-        puts "Gathering links on Page: #{page_number}"
+        ###Need to capture the state?!!
         new_links = 0
-
-        usa_page.links.each do |link|
-            if link.text.include?('School')
+        this_page.links.each do |link|
+            if link.text.include?('College') || link.text.include?("University")
                 puts "Adding #{link.text} to schools array"
                 schools << link
-                new_links += 1
-                puts "This makes : #{new_links} new links added this page"
-                grab_counter += 1
-                puts
-                puts "Grab Progress is: #{grab_counter}"
-                puts
-                puts "In state: #{this_state}"
-                puts
             end
         end
 
@@ -68,16 +50,12 @@ states.each do |state|
             finished_gathering_school_links = true
         else
             page_number += 1
-            usa_form.p = page_number.to_s
-            usa_form.levels = levels
-            usa_form.states = this_state
-            usa_page = agent.submit(usa_form)
             sleep(1)
         end
     end
 
     #go to each link in the schools array & write data to csv
-    finally = []
+
 
         schools.each do |school|
             school_name = school.text
@@ -114,10 +92,11 @@ states.each do |state|
             end
         end
 
-    CSV.open("college_coaches_in_#{this_state}.csv", "wb") do |csv|
-        puts "Writing to CSV"
-        
+    
+end
 
+CSV.open("college_coaches.csv", "wb") do |csv|
+        puts "Writing to CSV"
         finally.each do |subArray|
             csv << [subArray[0], subArray[1], subArray[2], subArray[3], subArray[4]]
             puts "Wrote: #{subArray[0]} to CSV"
@@ -126,7 +105,4 @@ states.each do |state|
             puts
             puts "For state: #{this_state}"
         end
-    end
 end
-
-
