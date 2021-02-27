@@ -37,7 +37,6 @@ pages.each do
         puts "On page #{page_number}"
 
         ###Need to capture the state?!!
-        new_links = 0
         this_page.links.each do |link|
             if link.text.include?('College') || link.text.include?("University")
                 puts "Adding #{link.text} to schools array"
@@ -45,7 +44,7 @@ pages.each do
             end
         end
 
-        if new_links == 0
+        if (page_number + 1) == 43
             puts "No new links found!"
             finished_gathering_school_links = true
         else
@@ -58,21 +57,28 @@ pages.each do
 
 
         schools.each do |school|
+            sport = nil
+            name = nil
+            email = "none"
             school_name = school.text
+            address = ""
             this_page = school.click
             puts "Clicked on #{school_name}"
-            puts
-            puts "In state: #{this_state}"
             sleep(1)
+            table = this_page.css('table') ###there are multiple tables!
+            table[0].css('td').each_with_index do |data, i|
+                if i == 1
+                    address = data.content
+                end
+            end
+
             information = this_page.xpath('/html/body/div/section/div[2]/section[3]/div[2]/table/tbody/tr')
             if information.nil? || information.empty?
                 puts "Was not able to find Coaches information!"
             else
                 puts "Found Coaches information!"
             end
-            sport = nil
-            name = nil
-            email = "none"
+
             information.each do |row|
                 row.xpath('td').each_with_index do |data, i|
                     case i
@@ -88,11 +94,9 @@ pages.each do
                         end
                     end
                 end
-                finally << [this_state, school_name, sport, name, email] 
+                finally << [school_name, address, sport, name, email] 
             end
-        end
-
-    
+        end  
 end
 
 CSV.open("college_coaches.csv", "wb") do |csv|
