@@ -25,26 +25,24 @@ page_number = 1
 finally = []
 schools = []
 
-(1..pages).each do 
-    finished_gathering_school_links = false
-    while !finished_gathering_school_links
-        this_page = agent.get "https://www.coachesdirectory.com/search?sort=name&p=#{page_number}&q=&states=&levels=JC%2CSC&types=&positions=&location=&radius=5&enrollment_min=0&enrollment_max=0"
-        puts "On page #{page_number}"
+finished_gathering_school_links = false
+while !finished_gathering_school_links
+    this_page = agent.get "https://www.coachesdirectory.com/search?sort=name&p=#{page_number}&q=&states=&levels=JC%2CSC&types=&positions=&location=&radius=5&enrollment_min=0&enrollment_max=0"
+    puts "On page #{page_number}"
 
-        this_page.links.each do |link|
-            if link.text.include?('College') || link.text.include?("University")
-                puts "Adding #{link.text} to schools array"
-                schools << link
-            end
+    this_page.links.each do |link|
+        if link.text.include?('College') || link.text.include?("University")
+            puts "Adding #{link.text} to schools array"
+            schools << link
         end
+    end
 
-        if (page_number + 1) == 43
-            puts "No new links found!"
-            finished_gathering_school_links = true
-        else
-            page_number += 1
-            sleep(1)
-        end
+    if (page_number + 1) == 43
+        puts "No new links found!"
+        finished_gathering_school_links = true
+    else
+        page_number += 1
+        sleep(1)
     end
 end
 
