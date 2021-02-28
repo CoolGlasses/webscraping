@@ -23,10 +23,9 @@ puts "Clicking on USA"
 pages = 42
 page_number = 1
 finally = []
+schools = []
 
 (1..pages).each do 
-    schools = []
-
     finished_gathering_school_links = false
     while !finished_gathering_school_links
         this_page = agent.get "https://www.coachesdirectory.com/search?sort=name&p=#{page_number}&q=&states=&levels=JC%2CSC&types=&positions=&location=&radius=5&enrollment_min=0&enrollment_max=0"
