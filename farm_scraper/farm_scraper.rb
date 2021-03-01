@@ -73,7 +73,7 @@ states.each do |key, value|
             done = false
             page += 1
             sleep(1)
-            mech = agent.get "https://farm.ewg.org/top_recips.php?fips=#{fips[key]}&progcode=totalfarm&page=#{page}"
+            mech = agent.get "https://farm.ewg.org/top_recips.php?fips=#{fips[key]}&progcode=totalfarm&page=#{page}&yr=2020"
             new_uri = mech.uri
             doc = Nokogiri::HTML(URI.open(new_uri, 'User-Agent' => '#{@browser}'))
             puts "Moving to Page ##{page}"
