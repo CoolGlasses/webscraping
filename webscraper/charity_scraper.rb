@@ -11,7 +11,9 @@ CSV.foreach("datadotgov_main.csv", headers: true, header_converters: :symbol) do
     table << row
 end
 
-table.each do |row|
+total_charities = table.length
+
+table.each_with_index do |row, k|
     #go to website
     agent = Mechanize.new
     search_page = agent.get('https://www.acnc.gov.au/charity')
@@ -37,6 +39,7 @@ table.each do |row|
     people.each_with_index do |person, i| #need to adjust for iteration through table!
         row["person_#{i + 1}".to_sym] = person.text
     end
+    puts "Progress: #{(k+1)} / #{total_charities}"
 end
 
 
