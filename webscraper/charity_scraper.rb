@@ -7,7 +7,7 @@ require 'json'
 
 table = []
 
-CSV.foreach("datadotgov_main.csv", headers: true, header_converters: :symbol) do |row|
+CSV.foreach("ACNC_data base_Mar 2021_Large charities.csv", headers: true, header_converters: :symbol) do |row|
     table << row
 end
 
