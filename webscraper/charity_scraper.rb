@@ -26,7 +26,7 @@ table.each_with_index do |row, k|
 
     #click on the charity to open the main page of the charity, if it exists, otherwise, skip
     if results_page.link_with(text: row[:charity_legal_name]).nil?
-        puts "ABN #{row[:abn]} Not Found! Moving on!"
+        puts "ABN #{row[:abn]}, Charity: #{row[:charity_legal_name]} Not Found! Moving on!"
         puts "Progress: #{(k+1)} / #{total_charities}"
         next
     else
