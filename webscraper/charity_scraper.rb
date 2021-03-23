@@ -24,21 +24,27 @@ table.each_with_index do |row, k|
     search_form.name_abn = row[:abn] #need to adjust for iteration through table!
     results_page = agent.submit(search_form, search_form.buttons.first)
 
-    #click on the charity to open the main page of the charity
-    charity_main_page = results_page.link_with(text: row[:charity_legal_name]).click #need to adjust for iteration through table!
+    #click on the charity to open the main page of the charity, if it exists, otherwise, skip
+    if results_page.link_with(text: row[:charity_legal_name]).nil?
+        puts "ABN #{row[:abn]} Not Found! Moving on!"
+        puts "Progress: #{(k+1)} / #{total_charities}"
+        next
+    else
+        charity_main_page = results_page.link_with(text: row[:charity_legal_name]).click #need to adjust for iteration through table!
+        #grab total income from main page -- assign to table[row #][:income]
+        income = charity_main_page.css('.field-name-acnc-node-charity-graphs > div:nth-child(1) > div:nth-child(1) > p:nth-child(3)').text
+        income = income[13..-1]
+        row[:income] = income #need to fix for table iteration!
 
-    #grab total income from main page -- assign to table[row #][:income]
-    income = charity_main_page.css('.field-name-acnc-node-charity-graphs > div:nth-child(1) > div:nth-child(1) > p:nth-child(3)').text
-    income = income[13..-1]
-    row[:income] = income #need to fix for table iteration!
-
-    #navigate to People tab
-    #scrape all people listed -- assign to table[row #][:person_#{number}]
-    people = charity_main_page.css('#views-bootstrap-grid-1 > div:nth-child(1)')
-    people = people.css('h4')
-    people.each_with_index do |person, i| #need to adjust for iteration through table!
-        row["person_#{i + 1}".to_sym] = person.text
+        #navigate to People tab
+        #scrape all people listed -- assign to table[row #][:person_#{number}]
+        people = charity_main_page.css('#views-bootstrap-grid-1 > div:nth-child(1)')
+        people = people.css('h4')
+        people.each_with_index do |person, i| #need to adjust for iteration through table!
+            row["person_#{i + 1}".to_sym] = person.text
+        end
     end
+
     puts "Progress: #{(k+1)} / #{total_charities}"
 end
 
