@@ -2,6 +2,7 @@ require 'mechanize'
 require 'csv'
 require 'nokogiri'
 require 'json'
+require 'pry'
 
 
 #get passed login screen
@@ -9,7 +10,7 @@ agent = Mechanize.new
 login_page = agent.get('https://www.coachesdirectory.com/login')
 login_form = login_page.form
 login_form.email = 'collinsbasketball@gmail.com'
-login_form.password = 'wisc537bb'
+login_form.password = 'Wisbball24@!'  #updated 7/23/23
 first_page = agent.submit(login_form, login_form.buttons.first)
 grab_counter = 0
 write_counter = 0
@@ -17,7 +18,13 @@ write_counter = 0
 #goes to page for usa
 
 sleep(3)
-usa_page = agent.page.links.find { |l| l.text == "USA" }.click
+## usa_page = agent.page.links.find { |l| l.text == "USA" }.click  The .find method doesn' work anymore?
+usa_page = ""
+first_page.links.each do |link|
+    if link.text.include?("USA")
+        usa_page = link.click
+    end
+end
 puts "Clicking on USA"
 
 #created an array of links to schools on this page
@@ -30,12 +37,12 @@ states.each do |state|
     schools = []
     usa_form = usa_page.form
     page_number = 1
-    levels = "JC\\%2CSC"
+    levels = "JH"  #value of the option value, not the displayed text  Other options are HS, JC and SC (Senior College)
     this_state = state
     usa_form.p = page_number.to_s
     usa_form.levels = levels
     usa_form.states = this_state
-    puts "Filtering Junior and Senior Colleges only"
+    puts "Filtering Junior High only"
     sleep(3)
     usa_page = agent.submit(usa_form)
 
@@ -114,7 +121,7 @@ states.each do |state|
             end
         end
 
-    CSV.open("college_coaches_in_#{this_state}.csv", "wb") do |csv|
+    CSV.open("Junior_High_coaches_in_#{this_state}.csv", "wb") do |csv|
         puts "Writing to CSV"
         
 
